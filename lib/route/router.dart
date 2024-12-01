@@ -1,6 +1,8 @@
+import 'package:ca_tl/views/commonUi/addTodo_Page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../views/Home/home_page.dart';
+import '../views/Test/test_page.dart';
 
 class Routes{
   static MaterialPageRoute<dynamic>? generateRoute(RouteSettings settings){
@@ -9,6 +11,16 @@ class Routes{
       case RouteName.home:
         return pageRoute(
           HomePage(),
+          settings: settings,
+        );
+      case RouteName.test:
+        return pageRoute(
+          TestPage(),
+          settings: settings,
+        );
+      case RouteName.add:
+        return pageRoute(
+          AddToDoPage(),
           settings: settings,
         );
     }
@@ -33,5 +45,7 @@ class Routes{
 
 class RouteName{
   static const String home = '/';
+  static const String test = '/test';
+  static const String add = '/add';
 }
 
