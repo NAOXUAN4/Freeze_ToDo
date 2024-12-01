@@ -66,6 +66,9 @@ dependencies:
   #14,syncfusion_flutter_calendar
   syncfusion_flutter_calendar: ^27.2.4
 
+  #15 Sqlite
+  sqflite: ^2.0.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

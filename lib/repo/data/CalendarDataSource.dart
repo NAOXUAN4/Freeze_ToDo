@@ -1,7 +1,7 @@
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class DataSource extends CalendarDataSource {
-  MeetingDataSource(List<Appointment> source) {
+  DataSource(List<Appointment> source) {
     appointments = source;
   }
 
