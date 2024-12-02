@@ -1,45 +1,56 @@
-// appointment_model.dart
-import 'dart:convert';
-import 'dart:ui';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class AppointmentModel {
-  final DateTime startTime;
-  final DateTime endTime;
-  final String subject;
-  final Color color;
+  int? id;
+  String subject;
+  DateTime startTime;
+  DateTime endTime;
+  String? notes;
+  String? color;
 
   AppointmentModel({
+    this.id,
+    required this.subject,
     required this.startTime,
     required this.endTime,
-    required this.subject,
-    required this.color,
+    this.notes,
+    this.color,
   });
 
-  Map<String, dynamic> toJson() {
+  // 将对象转换为Map，用于数据库存储
+  Map<String, dynamic> toMap() {
     return {
+      'id': id,
+      'subject': subject,
       'startTime': startTime.toIso8601String(),
       'endTime': endTime.toIso8601String(),
-      'subject': subject,
-      'color': color.value,
+      'notes': notes,
+      'color': color,
     };
   }
 
-  factory AppointmentModel.fromJson(Map<String, dynamic> json) {
+  // 从Map创建对象，用于数据库读取
+  factory AppointmentModel.fromMap(Map<String, dynamic> map) {
     return AppointmentModel(
-      startTime: DateTime.parse(json['startTime']),
-      endTime: DateTime.parse(json['endTime']),
-      subject: json['subject'],
-      color: Color(json['color']),
+      id: map['id'],
+      subject: map['subject'],
+      startTime: DateTime.parse(map['startTime']),
+      endTime: DateTime.parse(map['endTime']),
+      notes: map['notes'],
+      color: map['color'],
     );
   }
 
-  Appointment toAppointment() {
-    return Appointment(
-      startTime: startTime,
-      endTime: endTime,
-      subject: subject,
-      color: color,
-    );
+  static AppointmentModel appointmentsToModel(appointment){
+    return appointment.map((e) => AppointmentModel(
+      subject: e.subject,
+      startTime: e.startTime,
+      endTime: e.endTime,
+      notes: e.notes,
+      color: e.color?.value.toString(),
+    )).toList();;
   }
+
+
+
 }
