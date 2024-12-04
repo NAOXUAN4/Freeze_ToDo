@@ -1,3 +1,4 @@
+import 'package:ca_tl/views/Calendar/calendar_vm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:oktoast/oktoast.dart';
@@ -30,6 +31,7 @@ class _AddAppointmentDialogState extends State<AddAppointmentDialog> {
       subject: '',
       startTime: DateTime.now(),
       endTime: DateTime.now().add(Duration(hours: 1)),
+      state: "0",
     );
     _subjectController = TextEditingController(text: _newAppointment.subject);
     _focusNode = FocusNode();  // 初始化 FocusNode
@@ -66,7 +68,6 @@ class _AddAppointmentDialogState extends State<AddAppointmentDialog> {
     print(_subjectText);
     _saveAppointment();
   }
-
 
 // actions: [
   //   TextButton(

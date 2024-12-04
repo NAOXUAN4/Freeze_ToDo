@@ -33,6 +33,7 @@ class DatabaseHelper {
       subject TEXT NOT NULL,
       startTime TEXT NOT NULL,
       endTime TEXT NOT NULL,
+      state TEXT NOT NULL,   
       notes TEXT,
       color TEXT
     )
