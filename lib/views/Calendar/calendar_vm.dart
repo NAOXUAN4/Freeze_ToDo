@@ -24,13 +24,14 @@ class CalendarViewModel extends ChangeNotifier {
     await _dbHelper.queryAllAppointments().then((appointments){
       CalendarAppointments = appointments;
       appointmentDataSource = _AppointmentDataSource(CalendarAppointments);
+      notifyListeners();
     });
-    notifyListeners();
+
   }
 
   Future<void> addAppointment(AppointmentModel appointment) async {
-    await _dbHelper.insertAppointment(appointment).then((id){
-      appointment.id = id;
+    await _dbHelper.insertAppointment(appointment).then((todo_id){
+      appointment.todo_id = todo_id;
       CalendarAppointments.add(appointment);
       appointmentDataSource = _AppointmentDataSource(CalendarAppointments);
       notifyListeners();
@@ -38,9 +39,9 @@ class CalendarViewModel extends ChangeNotifier {
   }
 
   Future<void> deleteAppointment(AppointmentModel appointment) async {
-    if (appointment.id != null) {
+    if (appointment.todo_id != null) {
       // print("Delete ID: ${appointment.id}");
-      await _dbHelper.deleteAppointment(appointment.id!).then((value){
+      await _dbHelper.deleteAppointment(appointment.todo_id!).then((value){
         _printDatabaseContent();
         CalendarAppointments.remove(appointment);
         appointmentDataSource = _AppointmentDataSource(CalendarAppointments);
@@ -73,7 +74,7 @@ class _AppointmentDataSource extends CalendarDataSource {
   _AppointmentDataSource(List<AppointmentModel> source) {
     appointments = source.map((model) {
       return AppointmentModel(
-        id: model.id,
+        todo_id: model.todo_id,
         state: model.state,
         startTime: model.startTime,
         subject: model.subject,

@@ -29,7 +29,7 @@ class DatabaseHelper {
   Future<void> _createDB(Database db, int version) async {
     await db.execute('''
     CREATE TABLE appointments (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      todo_id INTEGER PRIMARY KEY AUTOINCREMENT,
       subject TEXT NOT NULL,
       startTime TEXT NOT NULL,
       endTime TEXT NOT NULL,
@@ -59,18 +59,18 @@ class DatabaseHelper {
     return await db.update(
       'appointments',
       appointment.toMap(),
-      where: 'id = ?',
-      whereArgs: [appointment.id],
+      where: 'todo_id = ?',
+      whereArgs: [appointment.todo_id],
     );
   }
 
   // 删除
-  Future<int> deleteAppointment(int id) async {
+  Future<int> deleteAppointment(int todo_id) async {
     final db = await database;
     return await db.delete(
       'appointments',
-      where: 'id = ?',
-      whereArgs: [id],
+      where: 'todo_id = ?',
+      whereArgs: [todo_id],
     );
   }
 

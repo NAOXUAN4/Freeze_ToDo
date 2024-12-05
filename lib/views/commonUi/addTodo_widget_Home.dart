@@ -1,16 +1,12 @@
-import 'package:ca_tl/views/Calendar/calendar_vm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:oktoast/oktoast.dart';
-import 'package:syncfusion_flutter_calendar/calendar.dart';
-
 import '../../models/appointment_model.dart';
 
 class AddAppointmentDialog extends StatefulWidget {
   final void Function(AppointmentModel) onSaveAppointment;
-  final DateTime initialDate;
+  final DateTime thisBarDate;
 
-  AddAppointmentDialog({required this.onSaveAppointment, required this.initialDate});
+  AddAppointmentDialog({required this.onSaveAppointment, required this.thisBarDate});
 
   @override
   _AddAppointmentDialogState createState() => _AddAppointmentDialogState();
@@ -25,13 +21,14 @@ class _AddAppointmentDialogState extends State<AddAppointmentDialog> {
   late bool _isChosenStart = false;
   late bool _isChosenEnd = false;
 
+
   @override
   void initState() {
     super.initState();
     _newAppointment = AppointmentModel(
       subject: '',
-      startTime: DateTime.now(),
-      endTime: DateTime.now().add(Duration(hours: 1)),
+      startTime: widget.thisBarDate,
+      endTime: widget.thisBarDate.add(Duration(hours: 1)),
       state: "undone",
     );
     _subjectController = TextEditingController(text: _newAppointment.subject);
@@ -82,57 +79,57 @@ class _AddAppointmentDialogState extends State<AddAppointmentDialog> {
           children: [
             SizedBox(height: 16.h),
             Container(
-              width: double.infinity,
-              height: 60.h,
-              child:Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.1),
-                    ),
-                    width: 250.w,
-                    height: 45.h,
-                    child: TextFormField(
-                      controller: _subjectController,
-                      focusNode: _focusNode,
-                      decoration: InputDecoration(
-                        labelText: '任务',
-                        border: OutlineInputBorder(),
+                width: double.infinity,
+                height: 60.h,
+                child:Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.1),
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '任务内容不能为空';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {
-                        _newAppointment.subject = value!; // 保存验证通过的值
-                      },
-                    ),
-                  ),
-                  SizedBox(width: 10.w),
-                  Container(
-                      width: 60.w,
+                      width: 250.w,
                       height: 45.h,
-                      child: OutlinedButton(
-                        style: ButtonStyle(
-                          // backgroundColor: WidgetStateProperty.all(Colors.blue),
-                          side: WidgetStateProperty.all(BorderSide(color: Colors.blue,width: 2)),
-                          minimumSize: WidgetStateProperty.all(Size(double.infinity, 40)),
-                          maximumSize: WidgetStateProperty.all(Size(double.infinity, 40)),
-                          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
+                      child: TextFormField(
+                        controller: _subjectController,
+                        focusNode: _focusNode,
+                        decoration: InputDecoration(
+                          labelText: '任务',
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return '任务内容不能为空';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          _newAppointment.subject = value!; // 保存验证通过的值
+                        },
+                      ),
+                    ),
+                    SizedBox(width: 10.w),
+                    Container(
+                        width: 60.w,
+                        height: 45.h,
+                        child: OutlinedButton(
+                          style: ButtonStyle(
+                            // backgroundColor: WidgetStateProperty.all(Colors.blue),
+                              side: WidgetStateProperty.all(BorderSide(color: Colors.blue,width: 2)),
+                              minimumSize: WidgetStateProperty.all(Size(double.infinity, 40)),
+                              maximumSize: WidgetStateProperty.all(Size(double.infinity, 40)),
+                              shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  )
                               )
-                          )
-                        ), onPressed: () { _handelSubmit(); }, child: Center(child: Icon(Icons.add,size: 20.r,)),
-                      )
-                  )
+                          ), onPressed: () { _handelSubmit(); }, child: Center(child: Icon(Icons.add,size: 20.r,)),
+                        )
+                    )
 
-                ],
-              )
+                  ],
+                )
             ),
             SizedBox(height: 16),
             SingleChildScrollView(

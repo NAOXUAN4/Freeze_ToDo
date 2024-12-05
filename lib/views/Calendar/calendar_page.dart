@@ -105,7 +105,7 @@ class _CalendarPageState extends State<CalendarPage> {
                 SnackBar(content: Text('已添加')),
               );
             });
-          },
+          }, initialDate: DateTime.now(),
         );
       },
     );

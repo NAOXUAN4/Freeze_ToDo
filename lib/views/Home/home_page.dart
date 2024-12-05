@@ -6,9 +6,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:oktoast/oktoast.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import '../../theme.dart';
 import '../Calendar/calendar_vm.dart';
+import 'home_vm.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -23,27 +25,29 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
 
   late TabController _tabController;  //创建tab控制器
-  CalendarViewModel ViewModel = CalendarViewModel();
+  HomepageViewModel ViewModel = HomepageViewModel();
   bool _isInitialized = false;
 
   @override
   void initState() {
     super.initState();
-    ViewModel.initCalendarDateSource().then((_) {
+    ViewModel.initHomeListDateSource(DateTime.now()).then((_) {
       setState(() {
         _isInitialized = true;
+
+        _tabController = TabController(
+            length: ViewModel.LastDate.length,
+            vsync: this,
+            initialIndex: 1);
+
+        _tabController.animateTo(
+          1,
+          duration: const Duration(milliseconds: 100),
+          curve: Curves.easeInOut,
+        );
+
       });
     });
-    _tabController = TabController(
-        length: 10,
-        vsync: this,
-        initialIndex: 1);
-
-    _tabController.animateTo(
-      1,
-      duration: const Duration(milliseconds: 100),
-      curve: Curves.easeInOut,
-    );
   }
 
 
@@ -56,34 +60,38 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return Scaffold(
-      body: Container(
-        height: double.infinity,
-        width: double.infinity,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: theme.Default_gradient,
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+    return ChangeNotifierProvider<HomepageViewModel>(
+      create: (context) {
+        return ViewModel;
+      },
+      child: Scaffold(
+        body: Container(
+          height: double.infinity,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: theme.Default_gradient,
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+          child: SafeArea(
+            child: Container(
+                height: double.infinity,
+                width: double.infinity,
+                child: Column(
+                  children:[
+                    _TabBar(),    //日期切换导航
+                    _ToDoDetails()    //待办事项详情，卡片
+                  ],)
+            ),
           ),
         ),
-        child: SafeArea(
-          child: Container(
-            height: double.infinity,
-            width: double.infinity,
-            child: Column(
-              children:[
-                _TabBar(),    //日期切换导航
-               _ToDoDetails()    //待办事项详情，卡片
-              ],)
-          ),
-        ),
+        floatingActionButton:  //底部快速功能按钮
+        _floatButtons(),
       ),
-      floatingActionButton:  //底部快速功能按钮
-      _floatButtons(),
     );
   }
-
   Widget _floatButtons(){
     return Stack(
       children: <Widget>[  //右边添加按钮
@@ -121,31 +129,35 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   }
 
   Widget _TabBar(){
-    return Container(
-        height: 60.h,
-        margin: EdgeInsets.symmetric(horizontal: 10.w),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-          child: ButtonsTabBar(
-            // isScrollable: true,
-            // padding: EdgeInsets.symmetric(horizontal: 20.w),
-            width: 113.w,
-            unselectedDecoration: BoxDecoration(
+    return Consumer<HomepageViewModel>(
+      builder: (context,vm,child) {
+        return Container(
+            height: 60.h,
+            margin: EdgeInsets.symmetric(horizontal: 10.w),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+              child: ButtonsTabBar(
+                // isScrollable: true,
+                // padding: EdgeInsets.symmetric(horizontal: 20.w),
+                width: 113.w,
+                unselectedDecoration: BoxDecoration(
 
-              borderRadius: BorderRadius.circular(10.r),
-              color: Colors.white.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(10.r),
+                  color: Colors.white.withOpacity(0.1),
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.r),
+                  color: Colors.white.withOpacity(0.2),
+                ),
+                tabs: List.generate(10, (index) =>
+                    Tab(text: '${vm.LastDate[index].month} - ${vm.LastDate[index].day}')
+                ),
+                controller: _tabController,
+                contentCenter: true,
+              ),
             ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10.r),
-              color: Colors.white.withOpacity(0.2),
-            ),
-            tabs: List.generate(10, (index) =>
-                Tab(text: 'Date: ${index + 1}')
-            ),
-            controller: _tabController,
-            contentCenter: true,
-          ),
-        ),
+        );
+      }
     );
   }
 
@@ -239,10 +251,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               ),
             ),
           )
-
         ]
       )
     );
   }
-
 }
