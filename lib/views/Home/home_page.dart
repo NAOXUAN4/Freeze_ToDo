@@ -7,8 +7,8 @@ import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-
 import '../../theme.dart';
+import '../Calendar/calendar_vm.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -21,11 +21,19 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
+
   late TabController _tabController;  //创建tab控制器
+  CalendarViewModel ViewModel = CalendarViewModel();
+  bool _isInitialized = false;
 
   @override
   void initState() {
     super.initState();
+    ViewModel.initCalendarDateSource().then((_) {
+      setState(() {
+        _isInitialized = true;
+      });
+    });
     _tabController = TabController(
         length: 10,
         vsync: this,
@@ -101,7 +109,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             heroTag: "cal_hm",
             backgroundColor: HexColor("#96e1fb").withOpacity(0.5),
             onPressed: () {
-              Navigator.pushNamed(context, RouteName.test);
+              Navigator.pushNamed(context, RouteName.calendar);
             },
             tooltip: 'Second Action',
             child: Icon(Icons.calendar_month,size: 25.w,

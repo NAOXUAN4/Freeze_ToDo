@@ -31,7 +31,7 @@ class _AddAppointmentDialogState extends State<AddAppointmentDialog> {
       subject: '',
       startTime: DateTime.now(),
       endTime: DateTime.now().add(Duration(hours: 1)),
-      state: "0",
+      state: "undone",
     );
     _subjectController = TextEditingController(text: _newAppointment.subject);
     _focusNode = FocusNode();  // 初始化 FocusNode
@@ -62,23 +62,13 @@ class _AddAppointmentDialogState extends State<AddAppointmentDialog> {
   }
 
 
-  void _handelSubmit() {   //提交集成方法
+  void _handelSubmit() {   //提交
     final _subjectText = _subjectController.text;
     _newAppointment.subject = _subjectText;
-    print(_subjectText);
     _saveAppointment();
   }
 
-// actions: [
-  //   TextButton(
-  //     onPressed: () => Navigator.of(context).pop(),
-  //     child: Text('取消'),
-  //   ),
-  //   ElevatedButton(
-  //     onPressed: _saveAppointment,
-  //     child: Text('保存'),
-  //   ),
-  // ],
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -89,22 +79,59 @@ class _AddAppointmentDialogState extends State<AddAppointmentDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            TextFormField(
-              controller: _subjectController,
-              focusNode: _focusNode,
-              decoration: InputDecoration(
-                labelText: '任务',
-                border: OutlineInputBorder(),
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return '添加任务';
-                }
-                return null;
-              },
-              onSaved: (value) {
-                _newAppointment.subject = value!; // 保存验证通过的值
-              },
+            SizedBox(height: 16.h),
+            Container(
+              width: double.infinity,
+              height: 60.h,
+              child:Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.1),
+                    ),
+                    width: 250.w,
+                    height: 45.h,
+                    child: TextFormField(
+                      controller: _subjectController,
+                      focusNode: _focusNode,
+                      decoration: InputDecoration(
+                        labelText: '任务',
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return '任务内容不能为空';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        _newAppointment.subject = value!; // 保存验证通过的值
+                      },
+                    ),
+                  ),
+                  SizedBox(width: 10.w),
+                  Container(
+                      width: 60.w,
+                      height: 45.h,
+                      child: OutlinedButton(
+                        style: ButtonStyle(
+                          // backgroundColor: WidgetStateProperty.all(Colors.blue),
+                          side: WidgetStateProperty.all(BorderSide(color: Colors.blue,width: 2)),
+                          minimumSize: WidgetStateProperty.all(Size(double.infinity, 40)),
+                          maximumSize: WidgetStateProperty.all(Size(double.infinity, 40)),
+                          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              )
+                          )
+                        ), onPressed: () { _handelSubmit(); }, child: Center(child: Icon(Icons.add,size: 20.r,)),
+                      )
+                  )
+
+                ],
+              )
             ),
             SizedBox(height: 16),
             SingleChildScrollView(
@@ -119,21 +146,6 @@ class _AddAppointmentDialogState extends State<AddAppointmentDialog> {
                 ],
               ),
             ),
-            Container(
-                width: 150.w,
-                height: 40.h,
-                child: OutlinedButton(
-                  style: ButtonStyle(
-                      minimumSize: WidgetStateProperty.all(Size(double.infinity, 40)),
-                      maximumSize: WidgetStateProperty.all(Size(double.infinity, 40)),
-                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          )
-                      )
-                  ), onPressed: () { _handelSubmit(); }, child: Icon(Icons.add),
-                )
-            )
           ],
         ),
       ),
@@ -182,7 +194,7 @@ class _AddAppointmentDialogState extends State<AddAppointmentDialog> {
                 Text('${_newAppointment.startTime.toString().split(' ')[0]}',
                   textAlign: TextAlign.center,),
               if (!_isChosenStart)
-                Text('设置起始日期'),
+                Text('设置起始日期',style: TextStyle(fontSize: 12.sp),),
             ],
           ),
         ),
@@ -232,7 +244,7 @@ class _AddAppointmentDialogState extends State<AddAppointmentDialog> {
                 Text('${_newAppointment.endTime.toString().split(' ')[0]}',
                   textAlign: TextAlign.center,),
               if (!_isChosenEnd)
-                Text('设置截止日期'),
+                Text('设置截止日期',style: TextStyle(fontSize: 12.sp)),
             ],
           ),
         ),

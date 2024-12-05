@@ -14,7 +14,7 @@ class Routes{
           HomePage(),
           settings: settings,
         );
-      case RouteName.test:
+      case RouteName.calendar:
         return pageRoute(
           CalendarPage(),
           settings: settings,
@@ -22,6 +22,11 @@ class Routes{
       case RouteName.add:
         return pageRoute(
           AddToDoPage(),
+          settings: settings,
+        );
+      case RouteName.test:
+        return pageRoute(
+          test(),
           settings: settings,
         );
     }
@@ -48,5 +53,6 @@ class RouteName{
   static const String home = '/';
   static const String test = '/test';
   static const String add = '/add';
+  static const String calendar = '/calendar';
 }
 

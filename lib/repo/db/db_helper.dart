@@ -92,7 +92,7 @@ class DatabaseHelper {
     final tables = await db.rawQuery("SELECT name FROM sqlite_master WHERE type='table';");
     for (var table in tables) {
       final tableName = table['name'] as String;
-      print('Table: $tableName');
+      // print('Table: $tableName');
       // 查询表中的所有数据
       final rows = await db.query(tableName);
       for (var row in rows) {
