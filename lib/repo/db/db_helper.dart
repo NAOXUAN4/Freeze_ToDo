@@ -79,7 +79,7 @@ class DatabaseHelper {
     final db = await database;
     final maps = await db.query(
       'appointments',
-      where: 'startTime >= ? AND startTime <= ?',
+      where: 'startTime <= ? AND endTime >= ?',
       whereArgs: [start.toIso8601String(), end.toIso8601String()],
     );
     return maps.map((map) => AppointmentModel.fromMap(map)).toList();

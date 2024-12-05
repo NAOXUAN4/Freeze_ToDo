@@ -14,29 +14,57 @@ class HomepageViewModel extends ChangeNotifier{
 
   Future<void> initHomeListDateSource(DateTime dateTime) async{
     appointmentDataSource = await _AppointmentDataSource(HomeAppointments);
-    await generateLastTenDays(DateTime.now());
-    // await loadAppointments();
+    await generateLastTenDays(DateTime.now()).then((value) async {
+      await loadAppointments(startDate: LastDate.last, endDate: LastDate.first);
+    });
     notifyListeners();
   }
 
-  List<DateTime> generateLastTenDays(DateTime baseDate) {
+  Future<void> generateLastTenDays(DateTime baseDate) async {
+    LastDate.clear();
+    baseDate = DateTime(baseDate.year, baseDate.month, baseDate.day);
+    baseDate = baseDate.subtract(Duration(days: 1));
+    // print(baseDate);
     for (int i = 0; i < 10; i++) {
-      LastDate.add(baseDate.subtract(Duration(days: i)));
+      LastDate.add(baseDate.add(Duration(days: i)));
     }
-    return LastDate;
   }
 
 
-  // Future<void> loadAppointments({DateTime? startDate, DateTime? endDate}) async {
-  //   startDate ??= DateTime.now().subtract(Duration(days: 10));
-  //   endDate ??= DateTime.now().add(Duration(days: 1));
-  //
-  //   await _dbHelper.queryAppointmentsInRange(startDate, endDate).then((appointments) {
-  //     HomeAppointments = appointments;
-  //     appointmentDataSource = _AppointmentDataSource(HomeAppointments);
-  //     notifyListeners();
-  //   });
-  // }
+  Future<void> loadAppointments({DateTime? startDate, DateTime? endDate}) async {
+    await _dbHelper.queryAppointmentsByDateRange(startDate!, endDate!).then((appointments) {
+      HomeAppointments = appointments;
+      appointmentDataSource = _AppointmentDataSource(HomeAppointments);
+      notifyListeners();
+    });
+  }
+
+  Future<Map<DateTime, List<AppointmentModel>>> getTasksByDateRange(DateTime baseDate) async {
+    // 查询数据库获取任务列表
+    await loadAppointments(startDate: LastDate.last, endDate: LastDate.first);
+
+    // 创建一个 Map 来存储日期和对应的任务列表
+    Map<DateTime, List<AppointmentModel>> tasksByDate = {};
+
+    // 遍历日期列表
+    for (DateTime date in LastDate) {
+      // 过滤出当天的任务
+      List<AppointmentModel> appointmentsForDate = HomeAppointments.where((appointment) {
+        return appointment.startTime.year == date.year &&
+            appointment.startTime.month == date.month &&
+            appointment.startTime.day == date.day;
+      }).toList();
+
+      DateTime dateTime = DateTime(date.year, date.month, date.day);
+      // 将过滤后的任务列表存储到 Map 中
+      tasksByDate[dateTime] = appointmentsForDate;
+    }
+    notifyListeners();
+    return tasksByDate;
+
+  }
+
+
 
   Future<void> addAppointment(AppointmentModel appointment) async {
     await _dbHelper.insertAppointment(appointment).then((todo_id){

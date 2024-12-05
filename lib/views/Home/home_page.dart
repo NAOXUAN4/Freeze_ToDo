@@ -8,6 +8,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
+import '../../models/appointment_model.dart';
 import '../../theme.dart';
 import '../Calendar/calendar_vm.dart';
 import 'home_vm.dart';
@@ -26,6 +27,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   late TabController _tabController;  //创建tab控制器
   HomepageViewModel ViewModel = HomepageViewModel();
+  late Map<DateTime, List<AppointmentModel>> tasks;   //创建临时Task数据集合
   bool _isInitialized = false;
 
   @override
@@ -33,8 +35,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     super.initState();
     ViewModel.initHomeListDateSource(DateTime.now()).then((_) {
       setState(() {
-        _isInitialized = true;
-
         _tabController = TabController(
             length: ViewModel.LastDate.length,
             vsync: this,
@@ -45,11 +45,43 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           duration: const Duration(milliseconds: 100),
           curve: Curves.easeInOut,
         );
-
+        ViewModel.getTasksByDateRange(DateTime.now()).then((value){
+          setState(() {
+            tasks = value;
+            _isInitialized = true;
+            print(tasks);
+          });
+        });
       });
     });
   }
 
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    print('is DId');
+    // 在依赖发生变化时刷新数据
+    // ViewModel.initHomeListDateSource(DateTime.now()).then((_) {
+    //   setState(() {
+    //     _tabController = TabController(
+    //         length: ViewModel.LastDate.length,
+    //         vsync: this,
+    //         initialIndex: 1);
+    //
+    //     _tabController.animateTo(
+    //       1,
+    //       duration: const Duration(milliseconds: 100),
+    //       curve: Curves.easeInOut,
+    //     );
+    //     ViewModel.getTasksByDateRange(DateTime.now()).then((value){
+    //       setState(() {
+    //         tasks = value;
+    //         _isInitialized = true;
+    //         print(tasks);
+    //       });
+    //     });
+    //   });
+    // });
+  }
 
   @override
   void dispose() {
@@ -79,12 +111,12 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             child: Container(
                 height: double.infinity,
                 width: double.infinity,
-                child: Column(
+                child: _isInitialized == true ? Column(
                   children:[
                     _TabBar(),    //日期切换导航
                     _ToDoDetails()    //待办事项详情，卡片
-                  ],)
-            ),
+                  ],): Center(child: CircularProgressIndicator())
+            ) ,
           ),
         ),
         floatingActionButton:  //底部快速功能按钮
@@ -165,94 +197,120 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     return  Expanded(
       child: TabBarView(
         controller: _tabController,
-        children: List.generate(10, (index) =>
-          _ToDoPages(index: index)
+        children: List.generate(10, (indexPage) =>
+          _ToDoPages(indexPage: indexPage)
         ),),
 
     );
   }
 
-  Widget _ToDoPages({required int index}){
-    return Container(
-      margin: EdgeInsets.all(8.w),
-      height: double.infinity,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20.r),
-        color: Colors.white.withOpacity(0.1),
+  Widget _ToDoPages({required int indexPage}){
+    List<AppointmentModel>? tasksThisPage = tasks[ViewModel.LastDate[indexPage]];
+    return Consumer<HomepageViewModel>(
+      builder: (context,vm,child) {
+        return Container(
+          margin: EdgeInsets.all(8.w),
+          height: double.infinity,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20.r),
+            color: Colors.white.withOpacity(0.1),
 
-      ),
-      child: ListView.builder(
-        shrinkWrap: true,
-        itemCount: 3,
-        itemBuilder: (context,index){
-            return _ToDoCardItem(index: index, onTrick: (){
-              setState(() {
-                showToast('onCheck');
-              });
-            });
-        }),
+          ),
+          child: tasksThisPage!.length > 0 ?ListView.builder(
+            shrinkWrap: true,
+            itemCount: tasksThisPage.length,
+            itemBuilder: (context,indexList){
+                return _ToDoCardItem(indexList: indexList, onFinish: (){
+                  setState(() {
+                    showToast('onCheck');
+                  }
+                  );
+                }, tasksThisPage: tasksThisPage);
+            })
+              : Center(
+            child: Text("暂无任务",style: TextStyle(
+                color: Colors.white.withOpacity(0.5),
+                fontSize: 20.sp,
+                fontWeight: FontWeight.w500,
+                fontFamily: "Poppins"
+            ),),
+          ),
 
+        );
+      }
     );
   }
 
-  Widget _ToDoCardItem({required int index, required GestureTapCallback onTrick}){
-    return Container(
-      margin: EdgeInsets.only(left: 10.w,top: 12.h,right: 10.w),
-      height: 100.h,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20.r),
-        color: Colors.white.withOpacity(0.1),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            spreadRadius: 2,
-            blurRadius: 3,
-            offset: Offset(0, 3), // changes position of shadow
+  Widget _ToDoCardItem({required int indexList,       //详情卡片ITEM
+    required GestureTapCallback onFinish,
+    required List<AppointmentModel>? tasksThisPage,}){
+    return Consumer<HomepageViewModel>(
+      builder: (context,vm,child) {
+        return Container(
+          margin: EdgeInsets.only(left: 10.w,top: 12.h,right: 10.w),
+          height: 100.h,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20.r),
+            color: Colors.white.withOpacity(0.1),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                spreadRadius: 2,
+                blurRadius: 3,
+                offset: Offset(0, 3), // changes position of shadow
+              ),
+            ],
           ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15.r),
-              color: Colors.white.withOpacity(0.1),
-            ),
-            margin: EdgeInsets.only(left: 20.w),
-            width: 40.w,
-            height: 40.h,
-            child: Center(
-              child: GestureDetector(
-                onTap: onTrick,
-                child: Icon(
-                  Icons.check_circle_rounded,
-                  color: Colors.white,
-                  size: 30.w,
-                ),
-              )
-            ),
-          ),
-          Container(
-            child: GestureDetector(
-              onTap: () {setState(() {
-                showToast('onTapCArd');
-              });},
-              child: Container(
-                height: 80.h,
-                width: 220.w,
-                margin: EdgeInsets.only(left: 10.w),
+          child: Row(
+            children: [
+              Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15.r),
                   color: Colors.white.withOpacity(0.1),
                 ),
-
+                margin: EdgeInsets.only(left: 20.w),
+                width: 40.w,
+                height: 40.h,
+                child: Center(
+                  child: GestureDetector(
+                    onTap: onFinish,
+                    child: Icon(
+                      tasksThisPage?[indexList].state == "done" ? Icons.check_circle_rounded
+                          : Icons.circle_outlined,
+                      color: Colors.white,
+                      size: 30.w,
+                    ),
+                  )
+                ),
               ),
-            ),
+              Container(
+                child: GestureDetector(
+                  onTap: () {setState(() {
+                    showToast('onTapCArd');
+                  });},
+                  child: Container(
+                    height: 80.h,
+                    width: 220.w,
+                    margin: EdgeInsets.only(left: 10.w),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15.r),
+                      color: Colors.white.withOpacity(0.1),
+                    ),
+                    child: Center(
+                        child: Text("${tasksThisPage?[indexList].subject}",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20.sp),)),
+
+                  ),
+                ),
+              )
+            ]
           )
-        ]
-      )
+        );
+      }
     );
   }
 }
