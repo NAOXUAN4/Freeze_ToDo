@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:ca_tl/models/general_vm.dart';
 import 'package:ca_tl/route/router.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import '../../models/appointment_model.dart';
+import '../../models/general_vm.dart';
 import '../../theme.dart';
 import '../Calendar/calendar_vm.dart';
 import 'home_vm.dart';
@@ -27,6 +29,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   late TabController _tabController;  //创建tab控制器
   HomepageViewModel ViewModel = HomepageViewModel();
+
   late Map<DateTime, List<AppointmentModel>> tasks;   //创建临时Task数据集合
   bool _isInitialized = false;
 
@@ -54,11 +57,11 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         });
       });
     });
+
   }
 
   void didChangeDependencies() {
     super.didChangeDependencies();
-    print('is DId');
     // 在依赖发生变化时刷新数据
     // ViewModel.initHomeListDateSource(DateTime.now()).then((_) {
     //   setState(() {
@@ -97,15 +100,19 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         return ViewModel;
       },
       child: Scaffold(
-        body: Container(
+        body: Container(   //背景图
           height: double.infinity,
           width: double.infinity,
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: theme.Default_gradient,
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
+            image: const DecorationImage(
+              image: AssetImage("assets/images/bg.png"),
+              fit: BoxFit.cover,
+            )
+            // gradient: LinearGradient(
+            //   colors: theme.Default_gradient,
+            //   begin: Alignment.topLeft,
+            //   end: Alignment.bottomRight,
+            // ),
           ),
           child: SafeArea(
             child: Container(
@@ -167,7 +174,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             height: 60.h,
             margin: EdgeInsets.symmetric(horizontal: 10.w),
             child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+              filter: ImageFilter.blur(sigmaX: 0, sigmaY: 0),
               child: ButtonsTabBar(
                 // isScrollable: true,
                 // padding: EdgeInsets.symmetric(horizontal: 20.w),

@@ -7,6 +7,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import 'models/general_vm.dart';
+
 void main() {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(  //设置状态栏透明
     statusBarColor: Colors.transparent,
@@ -28,10 +30,18 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => CalendarViewModel()),
+        ChangeNotifierProvider(create: (_) => GeneralViewModel()..initCalendarDateSource().then((onValue){
+          print("GVM初始化完成");
+        })),
       ],
       child: OKToast(
         child: ScreenUtilInit(
