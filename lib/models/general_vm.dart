@@ -11,10 +11,16 @@ class GeneralViewModel extends ChangeNotifier {
   // 在 _CalendarPageState 类中添加 _appointmentDataSource 变量
   late _AppointmentDataSource appointmentDataSource;// 临时储存日程
 
-  //临时储存日程
+  //临时储存日程（calenderList部分）
   late List<AppointmentModel> appointments = [];
-
   bool isInitialized = false;
+
+  // 临时储存日程（HomeList部分）
+  late List<DateTime> LastDate = [];  //近n天日期索引List
+  late Map<DateTime, List<AppointmentModel>> tasksByDate = {};   //创建临时Task数据集合
+
+  bool _isLoading = false;  //锁定
+  bool get isLoading => _isLoading;
 
 
   // 私有构造函数
@@ -25,48 +31,55 @@ class GeneralViewModel extends ChangeNotifier {
   //初始化viewmodel
   Future<void> initCalendarDateSource() async{
     appointmentDataSource = await _AppointmentDataSource(GeneralAppointments);
-    await loadAppointmentsALL().then((onValue){
-      isInitialized = true;
-      appointments.clear();
-    });
-    notifyListeners();
+    await generateLastDates(DateTime.now());
+      await loadAppointmentsALL().then((onValue) async {
+        await getTasksByDate().then((onValue){
+          isInitialized = true;
+          notifyListeners();
+        });
+      });
+
   }
 
   //根据date筛选（在Load之后才能使用）  ==>> List<AppointmentModel>
   Future<void> getAppointmentsByDate(DateTime date) async {
-     appointments = await GeneralAppointments.where((appointment) {
+
+    _isLoading = true;
+    notifyListeners();
+
+    appointments.clear();
+    appointments = await GeneralAppointments.where((appointment) {
+
       return appointment.startTime.isBefore(date.add(Duration(days: 1))) &&
           appointment.endTime.isAfter(date.subtract(Duration(days: 1)));
     }).toList();
-     notifyListeners();
+
+    _isLoading = false;
+    notifyListeners();   //解锁
+
   }
 
-  //根据date范围筛选（在Load之后才能使用） ==> Map<DateTime, List<AppointmentModel>> tasksByDate
-  Future<Map<DateTime, List<AppointmentModel>>> getTasksByDateRange(DateTime baseDate, List<DateTime> LastDate) async {
-    Map<DateTime, List<AppointmentModel>> tasksByDate = {};
-    // 遍历日期列表
-    for (DateTime date in LastDate) {
-      // 过滤出该天的任务
-      List<AppointmentModel> appointmentsForDate = GeneralAppointments.where((appointment) {
-        return appointment.startTime.year == date.year &&
-            appointment.startTime.month == date.month &&
-            appointment.startTime.day == date.day;
+  //获取LateDate的每日内容，并且修改taskByDate
+  Future<void> getTasksByDate() async {
+    tasksByDate.clear();
+    for (var date in LastDate) {
+      List<AppointmentModel> tasks = await GeneralAppointments.where((appointment) {
+        return appointment.startTime.isBefore(date.add(Duration(days: 1))) &&
+            appointment.endTime.isAfter(date.subtract(Duration(days: 1)));
       }).toList();
-
-      DateTime dateTime = DateTime(date.year, date.month, date.day);
-      // 将过滤后的任务列表存储到 Map 中
-      tasksByDate[dateTime] = appointmentsForDate;
+      tasksByDate[date] = tasks;
     }
     notifyListeners();
-    return tasksByDate;
   }
 
   //获取所有日程
   Future<void> loadAppointmentsALL() async {
-    await _dbHelper.queryAllAppointments().then((appointments){
-      GeneralAppointments = appointments;
-      appointmentDataSource = _AppointmentDataSource(GeneralAppointments);
-      notifyListeners();
+    await _dbHelper.queryAllAppointments().then((appointments) async {
+      await getTasksByDate().then((onValue){
+        GeneralAppointments = appointments;
+        appointmentDataSource = _AppointmentDataSource(GeneralAppointments);
+        notifyListeners();
+      });
     });
   }
 
@@ -79,15 +92,14 @@ class GeneralViewModel extends ChangeNotifier {
     });
   }
 
-
-
   // 添加日程
   Future<void> addAppointment(AppointmentModel appointment) async {
-    await _dbHelper.insertAppointment(appointment).then((todo_id){
+    await _dbHelper.insertAppointment(appointment).then((todo_id) async {
       appointment.todo_id = todo_id;
       GeneralAppointments.add(appointment);
       appointmentDataSource = _AppointmentDataSource(GeneralAppointments);
       notifyListeners();
+      // _printDatabaseContent();
     });
   }
 
@@ -110,12 +122,28 @@ class GeneralViewModel extends ChangeNotifier {
 
   // 修改（完成/取消完成）日程
   Future<void>finishAppointment(AppointmentModel appointment, bool Cancel) async {
-    await _dbHelper.updateAppointment(appointment).then((value){
-      // appointment.state = Cancel == true ? "undone" : "done";
-      appointmentDataSource = _AppointmentDataSource(GeneralAppointments);
+    await _dbHelper.updateAppointment(appointment).then((value) async {
+      await getTasksByDate().then((onValue){
+        // appointment.state = Cancel == true ? "undone" : "done";
+        appointmentDataSource = _AppointmentDataSource(GeneralAppointments);
+        _printDatabaseContent();
+        notifyListeners();
+      });
     });
-    notifyListeners();
+
   }
+
+  //生成近n天日期索引
+  Future<void> generateLastDates(DateTime baseDate) async {
+    LastDate.clear();
+    baseDate = DateTime(baseDate.year, baseDate.month, baseDate.day);
+    baseDate = baseDate.subtract(Duration(days: 1));
+    for (int i = 0; i < 10; i++) {
+      LastDate.add(baseDate.add(Duration(days: i)));
+    }
+  }
+
+
 
   //输出数据库内容
   void _printDatabaseContent() async {

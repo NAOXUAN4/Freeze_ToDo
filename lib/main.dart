@@ -1,3 +1,4 @@
+import 'package:ca_tl/repo/routeObserver/routeObserver.dart';
 import 'package:ca_tl/route/router.dart';
 import 'package:ca_tl/views/Calendar/calendar_vm.dart';
 import 'package:ca_tl/views/Test/MYSTATE.dart';
@@ -47,6 +48,7 @@ class _MyAppState extends State<MyApp> {
         child: ScreenUtilInit(
           builder: (context, child) {
             return MaterialApp(
+              navigatorObservers: [routeObserver],   //添加路由监听
               title: widget.title,
               theme: ThemeData(
                 colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),

@@ -41,11 +41,15 @@ class _CalendarPageState extends State<CalendarPage> {
             height: double.infinity,
             width: double.infinity,
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: theme.Default_gradient,
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
+              // gradient: LinearGradient(
+              //   colors: theme.Default_gradient,
+              //   begin: Alignment.topLeft,
+              //   end: Alignment.bottomRight,
+              // ),
+              image: DecorationImage(
+                image: theme.Default_BackGround,
+                fit: BoxFit.cover,
+              )
             ),
             child: SafeArea(
               child: Stack(
@@ -94,6 +98,7 @@ class _CalendarPageState extends State<CalendarPage> {
           onSaveAppointment: (appointment) {
             // 保存新建的日程
             ViewModel.addAppointment(appointment).then((value){
+              ViewModel.loadAppointmentsALL();
               ScaffoldMessenger.of(context).showSnackBar(   //下方弹出框
                 SnackBar(content: Text('已添加')),
               );
@@ -135,8 +140,11 @@ class _CalendarPageState extends State<CalendarPage> {
   //<<----------------------------------------------------------------日历组件
   //日历卡片列表----------------------------------------------------------------->>
   Widget _list({required DateTime? date}){   //每日卡片列表
-    final ViewModel = Provider.of<GeneralViewModel>(context);
-    ViewModel.getAppointmentsByDate(date!).then((value){
+    final ViewModel = Provider.of<GeneralViewModel>(context,listen: false);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ViewModel.getAppointmentsByDate(date!).then((value) {
+        // 处理获取到的数据
+      });
     });
     return Consumer<GeneralViewModel>(
             builder: (context,vm,child) {
@@ -154,7 +162,7 @@ class _CalendarPageState extends State<CalendarPage> {
                                         vm.appointments[index]
                                     ).then((onValue){
                                       vm.loadAppointmentsALL();
-                                      vm.getAppointmentsByDate(date);
+                                      vm.getAppointmentsByDate(date!);
                                     });
                                     ScaffoldMessenger.of(context).showSnackBar(   //下方弹出框
                                       SnackBar(content: Text('${vm.appointments[index].subject} 已移除')),
@@ -163,6 +171,7 @@ class _CalendarPageState extends State<CalendarPage> {
                                   onFinish: (){
                                     vm.appointments[index].state =
                                       vm.appointments[index].state == "done" ? "undone" : "done";
+                                      vm.tasksByDate[date]?[index].state == "done" ? "undone" : "done";
                                     // print("${details.appointments?[index].subject} : is ${details.appointments?[index].state}");
                                     vm.finishAppointment(
                                         vm.appointments[index],

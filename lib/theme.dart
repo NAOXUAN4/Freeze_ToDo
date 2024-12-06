@@ -13,6 +13,8 @@ class theme{
   ];
 
   static List <Color> Default_gradient =  [HexColor("#D7b3bb4"), HexColor("#19c9c1")];
+
+  static AssetImage Default_BackGround = AssetImage("assets/images/bg.png");
 }
 
 
