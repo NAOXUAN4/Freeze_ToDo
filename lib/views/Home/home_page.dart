@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   @override
   void initState() {
     super.initState();
-    routeObserver.subscribe(this, ModalRoute.of(context) as PageRoute);
+
 
     _tabController = TabController(
         length: 10,
@@ -49,13 +49,14 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   void didChangeDependencies() {
     super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context) as PageRoute);
 
   }
 
   @override
   void didPopNext() {
     // 页面从其他页面返回时执行的操作
-    print('HomePage didPopNext');
+    Provider.of<GeneralViewModel>(context,listen: false).loadAppointmentsALL();
   }
 
   @override

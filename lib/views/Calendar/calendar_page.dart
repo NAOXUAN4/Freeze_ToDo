@@ -98,7 +98,6 @@ class _CalendarPageState extends State<CalendarPage> {
           onSaveAppointment: (appointment) {
             // 保存新建的日程
             ViewModel.addAppointment(appointment).then((value){
-              ViewModel.loadAppointmentsALL();
               ScaffoldMessenger.of(context).showSnackBar(   //下方弹出框
                 SnackBar(content: Text('已添加')),
               );
