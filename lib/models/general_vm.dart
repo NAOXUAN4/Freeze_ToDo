@@ -49,9 +49,8 @@ class GeneralViewModel extends ChangeNotifier {
 
     appointments.clear();
     appointments = await GeneralAppointments.where((appointment) {
-
       return appointment.startTime.isBefore(date.add(Duration(days: 1))) &&
-          appointment.endTime.isAfter(date.subtract(Duration(days: 1)));
+          appointment.endTime.isAfter(date.subtract(Duration(seconds: 1)));
     }).toList();
 
     _isLoading = false;
@@ -65,7 +64,7 @@ class GeneralViewModel extends ChangeNotifier {
     for (var date in LastDate) {
       List<AppointmentModel> tasks = await GeneralAppointments.where((appointment) {
         return appointment.startTime.isBefore(date.add(Duration(days: 1))) &&
-            appointment.endTime.isAfter(date.subtract(Duration(days: 1)));
+            appointment.endTime.isAfter(date.subtract(Duration(seconds: 1)));
       }).toList();
       tasksByDate[date] = tasks;
     }

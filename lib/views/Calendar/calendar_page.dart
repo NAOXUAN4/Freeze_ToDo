@@ -114,8 +114,17 @@ class _CalendarPageState extends State<CalendarPage> {
     return Consumer<GeneralViewModel>(builder: (context,vm,child){
       return Expanded(
         child: SfCalendar(
-          todayHighlightColor: Colors.white.withOpacity(0.5),
-          todayTextStyle: TextStyle(color: Colors.white),
+          headerStyle: CalendarHeaderStyle(
+            backgroundColor: theme.theme_color_Darkest.withOpacity(0.1),
+            textStyle: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),
+          ),
+          todayHighlightColor: theme.theme_color_Dark.withOpacity(0.8),
+          todayTextStyle: theme.calendarCell_TextStyle_selected,
+          monthViewSettings: MonthViewSettings(
+            monthCellStyle: MonthCellStyle(
+              textStyle: theme.calendarCell_TextStyle,
+            )
+          ),
           selectionDecoration: BoxDecoration(
             color: Colors.white.withOpacity(0.1),
             borderRadius: BorderRadius.circular(5.r),
@@ -170,21 +179,16 @@ class _CalendarPageState extends State<CalendarPage> {
                                   onFinish: (){
                                     vm.appointments[index].state =
                                       vm.appointments[index].state == "done" ? "undone" : "done";
-                                      vm.tasksByDate[date]?[index].state == "done" ? "undone" : "done";
                                     // print("${details.appointments?[index].subject} : is ${details.appointments?[index].state}");
                                     vm.finishAppointment(
                                         vm.appointments[index],
                                         vm.appointments[index].state == "done" ? true : false   //如果已完成再点一下就是未完成
-                                    ).then((onValue){
-                                      setState(() {
-                                        vm.loadAppointmentsALL();
-                                      });
-                                    });
+                                    );
                                   }, appointments: vm.appointments,
                               ),
                             );
                           }
-                      ) : Container(child: Center(child: Text('当日无任务',style: TextStyle(color: Colors.white,fontSize: 20.sp),)),)
+                      ) : Container(child: Center(child: Text('当日无任务',style: TextStyle(color: Colors.white,fontSize: 20.sp,fontWeight: FontWeight.w600),)),)
               );
             }
           );

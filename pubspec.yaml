@@ -96,6 +96,10 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
+  fonts:
+    - family: Noto_Serif_SC
+      fonts:
+        - asset: assets\font\Noto_Serif_SC\NotoSerifSC-VariableFont_wght.ttf
   # assets:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg

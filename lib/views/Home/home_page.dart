@@ -56,8 +56,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   @override
   void didPopNext() {
     // 页面从其他页面返回时执行的操作
-    Provider.of<GeneralViewModel>(context,listen: false).loadAppointmentsALL();
+    // Provider.of<GeneralViewModel>(context,listen: false).loadAppointmentsALL();
   }
+
 
   @override
   void dispose() {
@@ -166,7 +167,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     return Consumer<GeneralViewModel>(
       builder: (context,vm,child) {
         return Container(
-            height: 60.h,
+            height: 30.h,
             margin: EdgeInsets.symmetric(horizontal: 10.w),
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 0, sigmaY: 0),
@@ -175,16 +176,26 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 // padding: EdgeInsets.symmetric(horizontal: 20.w),
                 width: 113.w,
                 unselectedDecoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5.r),
+                  color: theme.theme_color_Aveage.withOpacity(0.1),
+                  shape: BoxShape.rectangle,
 
-                  borderRadius: BorderRadius.circular(10.r),
-                  color: Colors.white.withOpacity(0.1),
                 ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.r),
-                  color: Colors.white.withOpacity(0.2),
-                ),
+                decoration: theme.TabBoxDecoration_selected,
                 tabs: List.generate(10, (index) =>
-                    Tab(text: '${vm.LastDate[index].month} - ${vm.LastDate[index].day}')
+                    Tab(
+                      child: Container(
+                        child: Text(
+                          '${vm.LastDate[index].month} - ${vm.LastDate[index].day}',
+                          style: TextStyle(
+                              fontSize: 15.sp,
+                              fontFamily: 'Noto_Serif_SC',
+                              color: Colors.black
+                          ),
+                        ),
+                      ),
+                    )
+                    // Tab(text: '${vm.LastDate[index].month} - ${vm.LastDate[index].day}',)
 
                 ),
                 controller: _tabController,
@@ -254,7 +265,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                       );
                     }
                 ),
-              ) : Container(child: Center(child: Text('当日无任务',style: TextStyle(color: Colors.white,fontSize: 20.sp),)),)
+              ) : Container(child: Center(child: Text('当日无任务',style: TextStyle(color: Colors.white,fontSize: 20.sp,fontWeight: FontWeight.w600),)),)
           );
         }
     );
@@ -274,14 +285,15 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                   context: context,
                   builder: (context) =>
                       AlertDialog(
-                          title: Text('确定删除该任务？'),
+                          backgroundColor: theme.theme_color_Lightest,
+                          title: Text('确定删除该任务？',style: TextStyle(fontWeight: FontWeight.w600),),
                           actions: [
                             TextButton(
-                              child: Text('取消'),
+                              child: Text('取消',style: TextStyle(fontWeight: FontWeight.w600,fontSize: 18.sp),),
                               onPressed: () => Navigator.of(context).pop(false),
                             ),
                             TextButton(
-                              child: Text('确定'),
+                              child: Text('确定',style: TextStyle(fontWeight: FontWeight.w600,fontSize: 18.sp),),
                               onPressed: () => {Navigator.of(context).pop(true),onDelete()},
                             ),
                           ]
@@ -292,11 +304,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 margin: EdgeInsets.only(left: 10.w, top: 12.h, right: 10.w),
                 height: 100.h,
                 width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20.r),
-                  color: Colors.white.withOpacity(0.2),
-                  boxShadow: theme.Default_boxShadow,
-                ),
+                decoration: theme.CardBoxDecoration,
                 child: Row(
                     children: [
                       Consumer<GeneralViewModel>(
@@ -315,9 +323,10 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                                     child: Icon(
                                       vm.tasksByDate[pageKey]![indexinList].state == "undone"
                                           ? Icons.circle_outlined : Icons
-                                          .check_circle,
-                                      color: Colors.white,
-                                      size: 30.w,
+                                          .check_circle_outline,
+                                      color: theme.theme_color_Darker.withOpacity(0.8),
+                                      weight: 10.0,
+                                      size: 35.w,
                                     ),
                                   )
                               ),
@@ -342,14 +351,14 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                             child: Text(
                               "${vm.tasksByDate[pageKey]![indexinList].subject}",
                               style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15.sp,
-                                  fontFamily: 'Poppins',
+                                  overflow: TextOverflow.ellipsis,
+                                  color: theme.theme_color_Darkest,
+                                  fontSize: 20.sp,
+                                  fontWeight: FontWeight.w500,
                                   decoration: vm.tasksByDate[pageKey]![indexinList].state ==
                                       "done"
                                       ? TextDecoration.lineThrough
                                       : null),),
-
                           ),
                         ),
                       ),

@@ -31,7 +31,7 @@ class _AddAppointmentDialogState extends State<AddAppointmentDialog> {
     _newAppointment = AppointmentModel(
       subject: '',
       startTime: DateTime.now(),
-      endTime: DateTime.now().add(Duration(hours: 1)),
+      endTime: DateTime.now(),
       state: "undone",
     );
     _subjectController = TextEditingController(text: _newAppointment.subject);
@@ -195,7 +195,7 @@ class _AddAppointmentDialogState extends State<AddAppointmentDialog> {
                 Text('${_newAppointment.startTime.toString().split(' ')[0]}',
                   textAlign: TextAlign.center,),
               if (!_isChosenStart)
-                Text('设置起始日期',style: TextStyle(fontSize: 12.sp),),
+                Text('设置起始日期',style: TextStyle(fontSize: 12.sp,fontWeight: FontWeight.w500),),
             ],
           ),
         ),
@@ -245,7 +245,7 @@ class _AddAppointmentDialogState extends State<AddAppointmentDialog> {
                 Text('${_newAppointment.endTime.toString().split(' ')[0]}',
                   textAlign: TextAlign.center,),
               if (!_isChosenEnd)
-                Text('设置截止日期',style: TextStyle(fontSize: 12.sp)),
+                Text('设置截止日期',style: TextStyle(fontSize: 12.sp,fontWeight: FontWeight.w500)),
             ],
           ),
         ),

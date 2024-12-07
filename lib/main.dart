@@ -1,5 +1,6 @@
 import 'package:ca_tl/repo/routeObserver/routeObserver.dart';
 import 'package:ca_tl/route/router.dart';
+import 'package:ca_tl/theme.dart';
 import 'package:ca_tl/views/Calendar/calendar_vm.dart';
 import 'package:ca_tl/views/Test/MYSTATE.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +42,7 @@ class _MyAppState extends State<MyApp> {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => GeneralViewModel()..initCalendarDateSource().then((onValue){
-          print("GVM初始化完成");
+          print("初始化完成");
         })),
       ],
       child: OKToast(
@@ -51,7 +52,8 @@ class _MyAppState extends State<MyApp> {
               navigatorObservers: [routeObserver],   //添加路由监听
               title: widget.title,
               theme: ThemeData(
-                colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+                colorScheme: theme.myColorScheme,
+                fontFamily: 'Noto_Serif_SC',
                 useMaterial3: true,
               ),
               onGenerateRoute: Routes.generateRoute,   //导入配置好的路由
