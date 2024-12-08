@@ -18,7 +18,7 @@ void main() {
     statusBarIconBrightness: Brightness.dark,
   ));
 
-  runApp(const MyApp(title: 'Demo',));
+  runApp(const MyApp(title: 'Freeze',));
 }
 
 class MyApp extends StatefulWidget {

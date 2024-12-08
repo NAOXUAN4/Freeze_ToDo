@@ -26,7 +26,7 @@ class Routes{
         );
       case RouteName.test:
         return pageRoute(
-          test(),
+          Example(),
           settings: settings,
         );
     }

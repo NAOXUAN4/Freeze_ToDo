@@ -186,7 +186,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                     Tab(
                       child: Container(
                         child: Text(
-                          '${vm.LastDate[index].month} - ${vm.LastDate[index].day}',
+                          '${vm.LastDate[index].month} 月 ${vm.LastDate[index].day} 日 ',
                           style: TextStyle(
                               fontSize: 15.sp,
                               fontFamily: 'Noto_Serif_SC',
