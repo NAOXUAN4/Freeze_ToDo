@@ -1,16 +1,8 @@
-# Freeze_ToDo
+<div align="center">
+    <h1>Freeze_ToDo</h1>
+    <h4>😼A cross-platform app developed with Flutter.😼</h4>
+</div>
 
-a todoList App
+![7374c1b9fc8a07826a08038c94908c0a](https://github.com/user-attachments/assets/2fcd5782-779a-4632-a242-84110b1d7423)
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
