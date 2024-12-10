@@ -16,7 +16,7 @@ class theme{
 
   static List <Color> Default_gradient =  [HexColor("#D7b3bb4"), HexColor("#19c9c1")];
 
-  static AssetImage Default_BackGround = AssetImage("assets/images/bg.png");
+  static AssetImage Default_BackGround = AssetImage("assets/images/ocean1.jpg");
 
   static const Color theme_color_Lightest = Color(0xffe4ebf7);
   static const Color theme_color_LighterP = Color(0xffbdd3eb);

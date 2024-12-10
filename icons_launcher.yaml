@@ -5,3 +5,5 @@ icons_launcher:
       enable: true
     ios:
       enable: true
+
+#      dart run icons_launcher:create
