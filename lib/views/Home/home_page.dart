@@ -243,7 +243,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                           pageKey: pageKey,
                           indexinList: indexinList,
                           onDelete: (){
-                            vm.deleteAppointment(
+                            vm.deleteAppointment(   //调用数据模型删除函数
                                 vm.tasksByDate[pageKey]![indexinList]
                             ).then((onValue){
                               vm.loadAppointmentsALL();
@@ -368,8 +368,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           );
         }
     );
-
-
     //<<----------------------------------------------------------------日历卡片列表
 
   }

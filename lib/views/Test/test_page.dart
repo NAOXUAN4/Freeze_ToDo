@@ -19,7 +19,6 @@ class _ExampleState extends State<Example> with SingleTickerProviderStateMixin {
       vsync: this,
       initialIndex: 4,
     );
-    _tabController.animateTo(4);
   }
 
   @override
@@ -29,35 +28,7 @@ class _ExampleState extends State<Example> with SingleTickerProviderStateMixin {
       body: SafeArea(
         child: Column(
           children: <Widget>[
-          //   TabBar(isScrollable: true,
-          //     tabs: [
-          //     Container(
-          //     width: 100, // 设置每个标签的宽度
-          //     child: Tab(icon: Icon(Icons.home), text: "Home"),
-          //   ),
-          //   Container(
-          //     width: 100,
-          //     child: Tab(icon: Icon(Icons.business), text: "Business"),
-          //   ),
-          //   Container(
-          //     width: 100,
-          //     child: Tab( text: "baz"),
-          //   ),
-          //   Container(
-          //     width: 100,
-          //     child: Tab(text: "qux"),
-          //   ),
-          //   Container(
-          //     width: 100,
-          //     child: Tab(text: "quux"),
-          //   ),
-          //   Container(
-          //     width: 100,
-          //     child: Tab( text: "quuz"),
-          //   ),
-          // ],controller: _tabController,),
             ButtonsTabBar(
-              width: 120,
               controller: _tabController,
               backgroundColor: Colors.red,
               buttonMargin: const EdgeInsets.only(right: 16),
@@ -80,7 +51,7 @@ class _ExampleState extends State<Example> with SingleTickerProviderStateMixin {
                 controller: _tabController,
                 children: typeList.map((e) {
                   return Center(
-                    child: Text(e,style: TextStyle(fontSize: 40),),
+                    child: Text(e),
                   );
                 }).toList(),
               ),
