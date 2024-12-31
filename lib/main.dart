@@ -57,7 +57,7 @@ class _MyAppState extends State<MyApp> {
                 useMaterial3: true,
               ),
               onGenerateRoute: Routes.generateRoute,   //导入配置好的路由
-              initialRoute: RouteName.test,   //设置初始路由路径(String)
+              initialRoute: RouteName.home,   //设置初始路由路径(String)
             );
           },
         ),

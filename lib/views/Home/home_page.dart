@@ -2,6 +2,8 @@ import 'dart:ui';
 import 'package:ca_tl/models/general_vm.dart';
 import 'package:ca_tl/repo/routeObserver/routeObserver.dart';
 import 'package:ca_tl/route/router.dart';
+import 'package:ca_tl/views/commonUi/ListCard_Detail.dart';
+import 'package:confetti/confetti.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -28,11 +30,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   late TabController _tabController;
 
-
   @override
   void initState() {
     super.initState();
-
 
     _tabController = TabController(
         length: 10,
@@ -181,7 +181,11 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                   shape: BoxShape.rectangle,
 
                 ),
-                decoration: theme.TabBoxDecoration_selected,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5.r),
+                  color: Colors.white.withOpacity(0.6),
+                  boxShadow: theme.Default_boxShadow,
+                ),
                 tabs: List.generate(10, (index) =>
                     Tab(
                       child: Container(
@@ -237,7 +241,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                     itemCount: vm.tasksByDate[pageKey]?.length,
                     itemBuilder: (context,indexinList){
                       return Container(
-                        height: 100.h,
+                        height: 80.h,
                         width: double.infinity,
                         child: _listItems(
                           pageKey: pageKey,
@@ -271,6 +275,12 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     );
   }
 
+  void _onPress_CardDetail({required AppointmentModel appointment,}){
+    showDialog(context: context, builder: (context){
+      return ListCard_Detail(appointment: appointment);
+    });
+  }
+
   Widget _listItems({required int indexinList,
     required DateTime? pageKey,
     required GestureTapCallback onDelete,
@@ -302,9 +312,14 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             },
             child: Container(
                 margin: EdgeInsets.only(left: 10.w, top: 12.h, right: 10.w),
-                height: 100.h,
+                height: 80.h,
                 width: double.infinity,
-                decoration: theme.CardBoxDecoration,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.r),
+                  color: Colors.white.withOpacity(0.6),
+                  border: Border.all(color: theme.theme_color_Aveage.withOpacity(0.5),width: 2),
+                  boxShadow: theme.Default_boxShadow,
+                ),
                 child: Row(
                     children: [
                       Consumer<GeneralViewModel>(
@@ -336,14 +351,13 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                       Container(
                         child: GestureDetector(
                           onTap: () {
-                            print(vm.tasksByDate[pageKey]![indexinList].state);
+                            _onPress_CardDetail(appointment: vm.tasksByDate[pageKey]![indexinList]);
                           },
                           child: Container(
-                            padding: EdgeInsets.all(20.w),
+                            padding: EdgeInsets.all(10.w),
                             height: 80.h,
                             width: 215.w,
-                            margin: EdgeInsets.only(
-                                left: 10.w, top: 10.h, bottom: 10.h),
+                            margin: EdgeInsets.only(left: 10.w,top: 10.h,bottom: 10.h),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15.r),
                               color: Colors.white.withOpacity(0.1),

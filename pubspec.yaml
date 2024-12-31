@@ -67,6 +67,11 @@ dependencies:
   syncfusion_flutter_calendar: ^27.2.4
   #15.modal_bottom_sheet:
   modal_bottom_sheet: ^3.0.0
+  #16. confetti:
+  confetti: ^0.8.0
+  #17.flutter_animate
+  flutter_animate: ^3.0.0
+
 
   #15 Sqlite
   sqflite: ^2.0.2

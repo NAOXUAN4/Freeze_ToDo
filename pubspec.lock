@@ -65,6 +65,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.18.0"
+  confetti:
+    dependency: "direct main"
+    description:
+      name: confetti
+      sha256: "79376a99648efbc3f23582f5784ced0fe239922bd1a0fb41f582051eba750751"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.8.0"
   crypto:
     dependency: transitive
     description:
@@ -134,6 +142,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_animate:
+    dependency: "direct main"
+    description:
+      name: flutter_animate
+      sha256: "3cb5eb80827abb48e362a9f29f7ba4e1b0edba6b2e2f35b1d350b6ef069bb547"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.0"
   flutter_html:
     dependency: "direct main"
     description:

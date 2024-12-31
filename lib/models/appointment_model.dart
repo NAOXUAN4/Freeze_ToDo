@@ -1,6 +1,12 @@
-
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-
+/// `AppointmentModel` 类继承自 `Appointment`，用于表示一个日程安排。
+/// 包含以下属性：
+/// - `todo_id`: 日程安排的唯一标识符。
+/// - `state`: 日程安排的状态。
+/// - `subject`: 日程安排的主题（这里做详情页）。
+/// - `startTime`: 日程安排的开始时间。
+/// - `endTime`: 日程安排的结束时间。
+/// - `notes`: 日程安排的备注
 class AppointmentModel extends Appointment{
   int? todo_id;
   String state;
